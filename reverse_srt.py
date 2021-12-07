@@ -72,28 +72,26 @@ def get_all_ext(path, ext):
 
 
 def Main():
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    print("{} : Start scan: {}".format(dt_string, sys.argv[1]))
-    root_dir = sys.argv[1]
-    if (not root_dir):
-        print('Usage: Select root dir')
-        return
+    root_dirs = sys.argv[1:]
+    if not root_dirs:
+        print('no root dirs found')
+    for root_dir in root_dirs:
+        print(f"Start scan: {root_dir}")
+        file_list = get_all_ext(root_dir, ".srt")
+        print("Found " + str(len(file_list)) + " files. Starting to convert")
 
-    file_list = get_all_ext(root_dir, ".srt")
-    print("Found " + str(len(file_list)) + " files. Starting to convert")
-
-    for file in file_list:
-        print('Reverse SRT file {} started'.format(file))
-        new_file = ".".join(re.split('[.]', file)[:-1]) + ".forced.srt"
-        try:
-            ReversePuctuation(file, new_file)
-            print('Reverse SRT file {} success'.format(file))
-        except Exception as e:
-            os.remove(new_file)
-            print('Reverse SRT file {} failed'.format(file))
-            print(e)
+        for file in file_list:
+            print('Reverse SRT file {} started'.format(file))
+            new_file = ".".join(re.split('[.]', file)[:-1]) + ".forced.srt"
+            try:
+                ReversePuctuation(file, new_file)
+                print('Reverse SRT file {} success'.format(file))
+            except Exception as e:
+                os.remove(new_file)
+                print('Reverse SRT file {} failed'.format(file))
+                print(e)
 
 
 if __name__ == '__main__':
     Main()
+
